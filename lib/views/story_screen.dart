@@ -178,12 +178,19 @@ class _StoryScreenState extends State<StoryScreen>
         }
       });
     } else {
+      //Pause Logic
       if (story.media == MediaType.video) {
         if (_videoController?.value.isPlaying ?? false) {
           _videoController?.pause();
           _animController?.stop();
         } else {
           _videoController?.play();
+          _animController?.forward();
+        }
+      } else {
+        if (_animController?.isAnimating ?? false) {
+          _animController?.stop();
+        } else {
           _animController?.forward();
         }
       }
