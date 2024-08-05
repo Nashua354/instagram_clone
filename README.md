@@ -1,4 +1,4 @@
-# Flutter Story Viewer
+# Instagram Clone
 
 A Flutter application to display Instagram-like stories with animations, smooth transitions, and progress bars. It supports multiple stories for each account and auto-advances through the stories.
 
@@ -25,8 +25,8 @@ A Flutter application to display Instagram-like stories with animations, smooth 
 1.  Clone the repository:
 
     ```
-    git clone https://github.com/your-username/flutter-story-viewer.git
-    cd flutter-story-viewer
+    git clone https://github.com/nashua354/instagram_clone.git
+    cd instagram_clone
     ```
 
 2.  Get the dependencies:
