@@ -1,4 +1,4 @@
-# Instagram Clone
+# Flutter Story Viewer
 
 A Flutter application to display Instagram-like stories with animations, smooth transitions, and progress bars. It supports multiple stories for each account and auto-advances through the stories.
 
@@ -24,28 +24,22 @@ A Flutter application to display Instagram-like stories with animations, smooth 
 
 1.  Clone the repository:
 
-    sh
-
-    Copy code
-
-    `git clone https://github.com/your-username/instagram_clone.git 
-cd instagram_clone`
+    ```
+    git clone https://github.com/your-username/flutter-story-viewer.git
+    cd flutter-story-viewer
+    ```
 
 2.  Get the dependencies:
 
-    sh
-
-    Copy code
-
-    `flutter pub get`
+    ```
+    flutter pub get
+    ```
 
 3.  Run the app:
 
-    sh
-
-    Copy code
-
-    `flutter run`
+    ```
+    flutter run
+    ```
 
     This command will launch the app on the connected device or emulator.
 
@@ -53,26 +47,20 @@ cd instagram_clone`
 
 1.  Build the APK:
 
-    sh
-
-    Copy code
-
-    `flutter build apk --release`
+    ```
+    flutter build apk --release
+    ```
 
 2.  Navigate to the APK directory:
 
-    sh
-
-    Copy code
-
-    `cd build/app/outputs/flutter-apk/`
+    ```
+    cd build/app/outputs/flutter-apk/
+    ```
 
 3.  Install the APK on an Android device:
 
-    sh
-
-    Copy code
-
-    `adb install app-release.apk`
+    ```
+    adb install app-release.apk
+    ```
 
     Make sure you have `adb` installed and your device is connected via USB with USB debugging enabled.
