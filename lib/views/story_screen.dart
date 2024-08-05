@@ -5,6 +5,7 @@ import 'package:flutter_cache_manager/file.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:insta_stories/models/story_model.dart';
 import 'package:insta_stories/models/user_model.dart';
+import 'package:insta_stories/repository/stories_repository.dart';
 import 'package:insta_stories/views/widgets/animated_bar.dart';
 import 'package:insta_stories/views/widgets/user_info.dart';
 
@@ -36,7 +37,7 @@ class _StoryScreenState extends State<StoryScreen>
     super.initState();
     _pageController = PageController();
     _animController = AnimationController(vsync: this);
-
+    preLoadStories();
     final Story firstStory = widget.user.stories.first;
     _loadStory(story: firstStory, animateToPage: false);
 
@@ -58,17 +59,11 @@ class _StoryScreenState extends State<StoryScreen>
     });
   }
 
-  Future<List<Story>> mockApiData() async {
-    //make api call and then
-    await preLoadStories();
-    return widget.user.stories;
-  }
-
   @override
   void dispose() {
     _pageController.dispose();
     _animController?.dispose();
-    // _videoController?.dispose();
+    _videoController?.dispose();
     super.dispose();
   }
 
@@ -80,77 +75,72 @@ class _StoryScreenState extends State<StoryScreen>
         backgroundColor: Colors.black,
         body: GestureDetector(
           onTapDown: (details) => _onTapDown(details, story),
-          child: FutureBuilder(
-              future: mockApiData(),
-              builder: (context, snapshot) {
-                return Stack(
-                  children: <Widget>[
-                    PageView.builder(
-                      controller: _pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: widget.user.stories.length,
-                      itemBuilder: (context, i) {
-                        final Story story = widget.user.stories[i];
-                        switch (story.media) {
-                          case MediaType.image:
-                            return CachedNetworkImage(
-                              imageUrl: story.url,
-                              fit: BoxFit.cover,
-                            );
-                          case MediaType.video:
-                            if (_videoController != null &&
-                                (_videoController?.value.isInitialized ??
-                                    false)) {
-                              return FittedBox(
-                                fit: BoxFit.cover,
-                                child: SizedBox(
-                                  width: _videoController?.value.size.width,
-                                  height: _videoController?.value.size.height,
-                                  child: CachedVideoPlayer(
-                                    _videoController!,
-                                  ),
-                                ),
-                              );
-                            }
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                    Positioned(
-                      top: 40.0,
-                      left: 10.0,
-                      right: 10.0,
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            children: widget.user.stories
-                                .asMap()
-                                .map((i, e) {
-                                  return MapEntry(
-                                    i,
-                                    AnimatedBar(
-                                      animController: _animController!,
-                                      position: i,
-                                      currentIndex: _currentIndex,
-                                    ),
-                                  );
-                                })
-                                .values
-                                .toList(),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 1.5,
-                              vertical: 10.0,
+          child: Stack(
+            children: <Widget>[
+              PageView.builder(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: widget.user.stories.length,
+                itemBuilder: (context, i) {
+                  final Story story = widget.user.stories[i];
+                  switch (story.media) {
+                    case MediaType.image:
+                      return CachedNetworkImage(
+                        imageUrl: story.url,
+                        fit: BoxFit.cover,
+                      );
+                    case MediaType.video:
+                      if (_videoController != null &&
+                          (_videoController?.value.isInitialized ?? false)) {
+                        return FittedBox(
+                          fit: BoxFit.cover,
+                          child: SizedBox(
+                            width: _videoController?.value.size.width,
+                            height: _videoController?.value.size.height,
+                            child: CachedVideoPlayer(
+                              _videoController!,
                             ),
-                            child: UserInfo(user: widget.user),
                           ),
-                        ],
+                        );
+                      }
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+              Positioned(
+                top: 40.0,
+                left: 10.0,
+                right: 10.0,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: widget.user.stories
+                          .asMap()
+                          .map((i, e) {
+                            return MapEntry(
+                              i,
+                              AnimatedBar(
+                                animController: _animController!,
+                                position: i,
+                                currentIndex: _currentIndex,
+                              ),
+                            );
+                          })
+                          .values
+                          .toList(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 1.5,
+                        vertical: 10.0,
                       ),
+                      child: UserInfo(user: widget.user),
                     ),
                   ],
-                );
-              }),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -226,5 +216,27 @@ class _StoryScreenState extends State<StoryScreen>
         curve: Curves.easeInOut,
       );
     }
+  }
+}
+
+class CustomCacheImage extends StatelessWidget {
+  const CustomCacheImage({super.key, required this.url});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<File>(
+      future: DefaultCacheManager().getSingleFile(url),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Image.file(
+            snapshot.data!,
+            fit: BoxFit.cover,
+          );
+        }
+        return const CircularProgressIndicator();
+      },
+    );
   }
 }

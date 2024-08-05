@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insta_stories/constants/assets.dart';
-import 'package:insta_stories/repository/remote_data_source.dart';
+import 'package:insta_stories/repository/stories_repository.dart';
 import 'package:insta_stories/views/story_screen.dart';
 import 'package:insta_stories/views/widgets/dotted_border.dart';
 
@@ -12,6 +12,12 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
+  @override
+  void initState() {
+    StoriesRepository().fetchStories();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -44,44 +50,59 @@ class _FeedScreenState extends State<FeedScreen> {
             children: [
               SizedBox(
                 height: 110,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) => StoryScreen(user: users[index])));
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Stack(alignment: Alignment.center, children: [
-                              SizedBox(
-                                width: 65,
-                                height: 65,
-                                child: CustomPaint(
-                                  painter: DottedBorder(
-                                      numberOfStories:
-                                          users[index].stories.length,
-                                      spaceLength: 4),
+                child: FutureBuilder(
+                    future: StoriesRepository().fetchStories(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        final users = snapshot.data;
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: users?.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) =>
+                                        StoryScreen(user: users![index])));
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          SizedBox(
+                                            width: 65,
+                                            height: 65,
+                                            child: CustomPaint(
+                                              painter: DottedBorder(
+                                                  numberOfStories: users![index]
+                                                      .stories
+                                                      .length,
+                                                  spaceLength: 4),
+                                            ),
+                                          ),
+                                          CircleAvatar(
+                                            radius: 30,
+                                            backgroundImage: NetworkImage(
+                                                users[index].profileImageUrl),
+                                          )
+                                        ]),
+                                    const SizedBox(height: 4),
+                                    Text(users[index].name),
+                                  ],
                                 ),
                               ),
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundImage:
-                                    NetworkImage(users[index].profileImageUrl),
-                              )
-                            ]),
-                            const SizedBox(height: 4),
-                            Text(users[index].name),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                            );
+                          },
+                        );
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                    }),
               ),
               const Divider()
             ],
