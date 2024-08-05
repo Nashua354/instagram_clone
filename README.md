@@ -1,16 +1,78 @@
-# insta_stories
+# Instagram Clone
 
-A new Flutter project.
+A Flutter application to display Instagram-like stories with animations, smooth transitions, and progress bars. It supports multiple stories for each account and auto-advances through the stories.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Display stories with smooth transitions and animations.
+- Show progress bars on top of each story based on its duration.
+- Support multiple stories for each account.
+- Navigate between stories by tapping on the left or right side of the screen.
+- Auto-advance to the next story/account and return to the previous page when all stories are shown.
 
-A few resources to get you started if this is your first Flutter project:
+## Installation
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Prerequisites
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter SDK: Installation Guide
+- Dart SDK (included with Flutter SDK)
+- Android Studio (for Android emulator) or Xcode (for iOS simulator)
+
+### Running the App
+
+#### Via Terminal
+
+1.  Clone the repository:
+
+    sh
+
+    Copy code
+
+    `git clone https://github.com/your-username/instagram_clone.git 
+cd instagram_clone`
+
+2.  Get the dependencies:
+
+    sh
+
+    Copy code
+
+    `flutter pub get`
+
+3.  Run the app:
+
+    sh
+
+    Copy code
+
+    `flutter run`
+
+    This command will launch the app on the connected device or emulator.
+
+#### Via APK
+
+1.  Build the APK:
+
+    sh
+
+    Copy code
+
+    `flutter build apk --release`
+
+2.  Navigate to the APK directory:
+
+    sh
+
+    Copy code
+
+    `cd build/app/outputs/flutter-apk/`
+
+3.  Install the APK on an Android device:
+
+    sh
+
+    Copy code
+
+    `adb install app-release.apk`
+
+    Make sure you have `adb` installed and your device is connected via USB with USB debugging enabled.
