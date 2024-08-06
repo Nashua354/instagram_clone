@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insta_stories/constants/assets.dart';
+import 'package:insta_stories/models/user_model.dart';
 import 'package:insta_stories/repository/stories_repository.dart';
 import 'package:insta_stories/views/story_screen.dart';
 import 'package:insta_stories/views/widgets/dotted_border.dart';
@@ -59,42 +60,7 @@ class _FeedScreenState extends State<FeedScreen> {
                           scrollDirection: Axis.horizontal,
                           itemCount: users?.length,
                           itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) =>
-                                        StoryScreen(user: users![index])));
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: [
-                                    Stack(
-                                        alignment: Alignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 65,
-                                            height: 65,
-                                            child: CustomPaint(
-                                              painter: DottedBorder(
-                                                  numberOfStories: users![index]
-                                                      .stories
-                                                      .length,
-                                                  spaceLength: 4),
-                                            ),
-                                          ),
-                                          CircleAvatar(
-                                            radius: 30,
-                                            backgroundImage: NetworkImage(
-                                                users[index].profileImageUrl),
-                                          )
-                                        ]),
-                                    const SizedBox(height: 4),
-                                    Text(users[index].name),
-                                  ],
-                                ),
-                              ),
-                            );
+                            return UserAvatar(user: users![index]);
                           },
                         );
                       } else {
@@ -107,6 +73,48 @@ class _FeedScreenState extends State<FeedScreen> {
               const Divider()
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class UserAvatar extends StatelessWidget {
+  const UserAvatar({
+    super.key,
+    required this.user,
+  });
+
+  final User user;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => StoryScreen(user: user)));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Stack(alignment: Alignment.center, children: [
+              SizedBox(
+                width: 65,
+                height: 65,
+                child: CustomPaint(
+                  painter: DottedBorder(
+                      numberOfStories: user.stories.length, spaceLength: 4),
+                ),
+              ),
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(user.profileImageUrl),
+              )
+            ]),
+            const SizedBox(height: 4),
+            Text(user.name),
+          ],
         ),
       ),
     );

@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:insta_stories/views/feed_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(MyApp());
 }
 

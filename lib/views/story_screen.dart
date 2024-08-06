@@ -1,11 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_video_player/cached_video_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/file.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:insta_stories/models/story_model.dart';
 import 'package:insta_stories/models/user_model.dart';
-import 'package:insta_stories/repository/stories_repository.dart';
 import 'package:insta_stories/views/widgets/animated_bar.dart';
 import 'package:insta_stories/views/widgets/user_info.dart';
 
@@ -85,9 +83,8 @@ class _StoryScreenState extends State<StoryScreen>
                   final Story story = widget.user.stories[i];
                   switch (story.media) {
                     case MediaType.image:
-                      return CachedNetworkImage(
-                        imageUrl: story.url,
-                        fit: BoxFit.cover,
+                      return CustomCacheImage(
+                        url: story.url,
                       );
                     case MediaType.video:
                       if (_videoController != null &&
@@ -226,17 +223,21 @@ class CustomCacheImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<File>(
-      future: DefaultCacheManager().getSingleFile(url),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return Image.file(
-            snapshot.data!,
-            fit: BoxFit.cover,
-          );
-        }
-        return const CircularProgressIndicator();
-      },
-    );
+    return CachedNetworkImage(imageUrl: url, fit: BoxFit.cover);
   }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return FutureBuilder<File>(
+  //     future: DefaultCacheManager().getSingleFile(url),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.connectionState == ConnectionState.done) {
+  //         return Image.file(
+  //           snapshot.data!,
+  //           fit: BoxFit.cover,
+  //         );
+  //       }
+  //       return const CircularProgressIndicator();
+  //     },
+  //   );
+  // }
 }
