@@ -17,7 +17,7 @@ workflows:
       # groups:
       #   - google_play # <-- (Includes GCLOUD_SERVICE_ACCOUNT_CREDENTIALS)
       vars:
-        PACKAGE_NAME: "com.example.insta_stories" # <-- Put your package name here
+        PACKAGE_NAME: "com.example.insta_stories"
         GOOGLE_PLAY_TRACK: "alpha"
       flutter: stable
     scripts:
